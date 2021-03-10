@@ -15,7 +15,9 @@ class MyApp extends StatelessWidget {
       create: (BuildContext context) => DataProvider(),
       child: MaterialApp(
         theme: ThemeData(
-            brightness: Brightness.light, primaryColor: Color(0xFF9E9E9E)),
+          brightness: Brightness.light,
+          primaryColor: Colors.grey[500],
+        ),
         home: Selecting(),
       ),
     );

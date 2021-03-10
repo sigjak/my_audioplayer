@@ -1,5 +1,5 @@
 import 'dart:convert';
-import '../models/station.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
@@ -133,6 +133,7 @@ class _PlayerState extends State<Player> {
                       : Text('');
                 }),
             PlayerButtons(_audioPlayer),
+            Buffered(audioPlayer: _audioPlayer),
             SliderBar(_audioPlayer),
             SizedBox(
               height: 5,
@@ -184,6 +185,35 @@ class _PlayerState extends State<Player> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class Buffered extends StatelessWidget {
+  const Buffered({
+    Key key,
+    @required AudioPlayer audioPlayer,
+  })  : _audioPlayer = audioPlayer,
+        super(key: key);
+
+  final AudioPlayer _audioPlayer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        StreamBuilder<Duration>(
+            stream: _audioPlayer.bufferedPositionStream,
+            builder: (context, snapshot) {
+              final buff = snapshot.data;
+              return Text(
+                buff.toString().split(".").first,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.red, fontSize: 20),
+              );
+            }),
+      ],
     );
   }
 }

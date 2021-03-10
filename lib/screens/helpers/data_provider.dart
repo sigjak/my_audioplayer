@@ -1,4 +1,3 @@
-import 'meta.dart';
 import 'package:flutter/foundation.dart';
 //import 'package:just_audio/just_audio.dart';
 import '../../models/station.dart';
@@ -35,15 +34,4 @@ class DataProvider with ChangeNotifier {
         source: 'http://stream3.radio.is:443/tbylgjan',
         logo: 'assets/images/bylgjan.png'),
   ];
-
-  // Future<void> setSource(int index) async {
-  //   AudioSource radioStation = AudioSource.uri(
-  //     Uri.parse(stations[index].source),
-  //     tag: AudioMetadata(
-  //         album: stations[index].name,
-  //         title: '',
-  //         artwork: stations[index].logo),
-  //   );
-  //   await _audioPlayer.setAudioSource(radioStation);
-  // }
 }
