@@ -1,13 +1,15 @@
+import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_session/audio_session.dart';
 
 import 'package:just_audio/just_audio.dart';
 import './commons/player_buttons.dart';
-
+import './commons/slider.dart';
 import '../screens/helpers/meta.dart';
 import 'package:provider/provider.dart';
 import './helpers/data_provider.dart';
+import './commons/radio_slider.dart';
 
 class Player extends StatefulWidget {
   final int index;
@@ -19,6 +21,9 @@ class Player extends StatefulWidget {
 class _PlayerState extends State<Player> {
   AudioPlayer _audioPlayer;
 
+  // List<AudioSource> workList = [];
+  // List<String> audioFiles = [];
+  // bool isRadio = false;
   @override
   void initState() {
     super.initState();
@@ -47,6 +52,30 @@ class _PlayerState extends State<Player> {
     super.dispose();
     print('dispose');
   }
+
+  // Future<void> getAssetFiles() async {
+  //   final manifestContent = await rootBundle.loadString('AssetManifest.json');
+  //   final Map<String, dynamic> manifestMap = jsonDecode(manifestContent);
+
+  //   List<String> assetFiles =
+  //       manifestMap.keys.where((key) => key.contains('.mp3')).toList();
+  //   assetFiles.forEach((element) {
+  //     String temp = element.replaceAll('%20', ' ');
+  //     String fileName = temp.substring(11);
+  //     audioFiles.add(fileName);
+  //     workList.add(
+  //       AudioSource.uri(
+  //         Uri.parse("asset:///$temp"),
+  //         tag: AudioMetadata(
+  //             album: "Grisham: The Guardians",
+  //             title: fileName,
+  //             artwork: "assets/images/guardians.jpg"),
+  //       ),
+  //     );
+  //   });
+
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -78,17 +107,21 @@ class _PlayerState extends State<Player> {
                       : Text('');
                 }),
             PlayerButtons(_audioPlayer),
+            //Buffered(audioPlayer: _audioPlayer),
+            // RadioSlider(_audioPlayer),
+            SliderBar(_audioPlayer),
             SizedBox(
               height: 5,
             ),
+
             Expanded(
               child: Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Text(
-                      'Radio Stations',
-                      style: TextStyle(fontSize: 22),
+                      'Episodes',
+                      style: TextStyle(fontSize: 18),
                     ),
                   ),
                   Expanded(
@@ -108,6 +141,14 @@ class _PlayerState extends State<Player> {
                                 await _audioPlayer.stop();
                                 initRadio(index);
                               },
+                              // onPressed: () async {
+                              //   await _audioPlayer
+                              //       .setAudioSource(_playList);
+                              //   //
+                              //   _audioPlayer.seek(Duration(seconds: 12),
+                              //       index: index);
+                              //   _audioPlayer.play();
+                              // },
                               icon: Icon(Icons.play_arrow),
                             ),
                           ),
@@ -131,6 +172,35 @@ class _PlayerState extends State<Player> {
         child: Icon(Icons.exit_to_app),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+}
+
+class Buffered extends StatelessWidget {
+  const Buffered({
+    Key key,
+    @required AudioPlayer audioPlayer,
+  })  : _audioPlayer = audioPlayer,
+        super(key: key);
+
+  final AudioPlayer _audioPlayer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        StreamBuilder<Duration>(
+            stream: _audioPlayer.bufferedPositionStream,
+            builder: (context, snapshot) {
+              final buff = snapshot.data;
+              return Text(
+                buff.toString().split(".").first,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.red, fontSize: 20),
+              );
+            }),
+      ],
     );
   }
 }
